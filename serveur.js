@@ -10,7 +10,7 @@ var application = express();
 console.log("l'application est en cours de marche");
 
 //application.listen(13107,"192.168.1.59");
-//application.listen(443,"https://listemovies.herokuapp.com/");
+application.listen(80,"https://listemovies.herokuapp.com");
 
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
