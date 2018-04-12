@@ -1,18 +1,26 @@
 //Import du framework express
 var express = require("express");
 
+//Recup de bodyparser
+var bodyparser = require("body-parser");
+
 //Creation d'un objet express
 var application = express();
 
 console.log("l'application est en cours de marche");
 
-application.listen(443,"https://listemovies.herokuapp.com/");
+application.listen(13107,"192.168.1.59");
 
 application.get('/',
 	function(request,response){
 		response.send("le git url très fort");
 	}
 );
+
+application.use(bodyparser.json());
+application.use(bodyparser.urlencoded({
+    extended: true
+}));
 
 //Liste de films
 application.get('/films',
@@ -51,12 +59,49 @@ application.get('/films/:id',
 //Ajouter un film
 
 application.post('/films/add',
-	function(request,response){
-		response.status(200).send("La fonction POST ajout de film");
-	}
+    function(request,response){
+        
+        var film = request.body;
+        film['id'] = generateID();
+        
+        listeDeFilms.push(film);
+        response.status(200).json(film);
+    }
 );
+
+//Supprimer un film
+
+application.delete('/films/:id', function(request,response){
+        response.header('Access-Control-Allow-Origin','*');
+	
+            let idFilm = parseInt(request.params.id);
+
+            for(var i = 0 ; i < listeDeFilms.length ; i++){
+                    if(listeDeFilms[i].id === idFilm){
+
+                            listeDeFilms.splice(i,1);
+
+                            response.setHeader('Content-Type','application/json');
+                                                                    //Liste de films sans celui supprimer
+                            response.status(200).json(listeDeFilms);
+                    }
+            }
+
+
+            response.setHeader('Content-Type','text/plain');
+            response.status(404).send("Le film est inconnu");
+});
 				 
-				 
+function generateID(){
+    var idMax = 0;
+    for(var i in listeDeFilms){
+        idMax = (listeDeFilms[i].id > idMax)?listeDeFilms[i].id : idMax;
+    }
+    
+    return idMax + 1;
+};	
+
+
 				 
 var listeDeFilms = [
 	{
