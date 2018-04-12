@@ -9,11 +9,14 @@ var application = express();
 
 console.log("l'application est en cours de marche");
 
-//application.listen(13107,"192.168.1.59");
-application.listen(80,"https://listemovies.herokuapp.com");
+// process.env.PORT lets the port be set by Heroku
+var port = process.env.PORT || 8080;
 
-app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
+//application.listen(13107,"192.168.1.59");
+//application.listen(port,"https://listemovies.herokuapp.com");
+
+application.listen(port, function() {
+    console.log('Our app is running on http://localhost:' + port);
 });
 
 application.get('/',
