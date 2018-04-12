@@ -1,13 +1,10 @@
 //Import du framework express
 var express = require("express");
-
-//Recup de bodyparser
-var bodyparser = require("body-parser");
-
 //Creation d'un objet express
 var application = express();
 
-console.log("l'application est en cours de marche");
+//Recup de bodyparser
+var bodyparser = require("body-parser");
 
 // process.env.PORT lets the port be set by Heroku
 var port = process.env.PORT || 8080;
