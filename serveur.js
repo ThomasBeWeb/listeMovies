@@ -7,14 +7,14 @@ var application = express();
 var bodyparser = require("body-parser");
 
 // process.env.PORT lets the port be set by Heroku
-var port = process.env.PORT || 8080;
+//var port = process.env.PORT || 8080;
 
-//application.listen(13107,"192.168.1.59");
+application.listen(13107,"192.168.1.59");
 //application.listen(port,"https://listemovies.herokuapp.com");
 
-application.listen(port, function() {
-    console.log('Our app is running on http://localhost:' + port);
-});
+//application.listen(port, function() {
+//    console.log('Our app is running on http://localhost:' + port);
+//});
 
 application.get('/',
 	function(request,response){
@@ -30,71 +30,83 @@ application.use(bodyparser.urlencoded({
 //Liste de films
 application.get('/films',
 	function(request,response){
-		response.header('Access-Control-Allow-Origin','*');
+		response.header('Access-Control-Allow-Origin','*');//
 		//Chainage reponse du serveur: status puis reponse
-		response.setHeader('Content-Type','application/json');
+		response.header('Content-Type','application/json');
 		response.status(200).json(listeDeFilms);
 	}
 );
 
 //Recuperer un seul film
 application.get('/films/:id',
-	function(request,response){
-	
-		response.header('Access-Control-Allow-Origin','*');
-	
-		let idFilm = parseInt(request.params.id);
-		let film;
-	
-		for(var i = 0 ; i < listeDeFilms.length ; i++){
-			if(listeDeFilms[i].id === idFilm){
-				film = listeDeFilms[i];
-				//Chainage reponse du serveur: status puis reponse
-				response.setHeader('Content-Type','application/json');
-				response.status(200).json(film);
-			}
-		}
-			
-		
-		response.setHeader('Content-Type','text/plain');
-		response.status(404).send("Le film est inconnu");
-	}
+    function(request,response){
+
+            response.header('Access-Control-Allow-Origin','*');//
+
+            let idFilm = parseInt(request.params.id);
+            let film;
+            var flag = false;
+
+            for(var i = 0 ; i < listeDeFilms.length ; i++){
+                    if(listeDeFilms[i].id === idFilm){
+                        film = listeDeFilms[i];
+                        flag = true;
+                    }
+            }
+
+            //Chainage reponse du serveur: status puis reponse
+            if(flag === true){
+                response.header('Content-Type','application/json');
+                response.status(200).json(film);
+            }else{
+            response.header('Content-Type','text/plain');
+            response.status(404).send("Le film est inconnu");
+        }
+    }
 );
 
-//Ajouter un film
+//AJOUTER UN FILM
 
-application.post('/films/add',
+application.post('/films/',
     function(request,response){
         
+        response.header('Access-Control-Allow-Origin','*');
+        
         var film = request.body;
+        
         film['id'] = generateID();
         
-        listeDeFilms.push(film);
-        response.status(200).json(film);
+         listeDeFilms.push(film);
+
+        response.header('Content-Type','application/json');   
+        
+        response.status(200).json(listeDeFilms);
     }
 );
 
 //Supprimer un film
 
 application.delete('/films/:id', function(request,response){
-        response.header('Access-Control-Allow-Origin','*');
-	
+         response.header('Access-Control-Allow-Origin','*');
+
             let idFilm = parseInt(request.params.id);
+            var flag = false;
 
             for(var i = 0 ; i < listeDeFilms.length ; i++){
                     if(listeDeFilms[i].id === idFilm){
-
-                            listeDeFilms.splice(i,1);
-
-                            response.setHeader('Content-Type','application/json');
-                                                                    //Liste de films sans celui supprimer
-                            response.status(200).json(listeDeFilms);
+                       listeDeFilms.splice(i,1);
+                        flag = true;
                     }
             }
 
-
-            response.setHeader('Content-Type','text/plain');
+            //Chainage reponse du serveur: status puis reponse
+            if(flag === true){
+                response.header('Content-Type','application/json');
+                response.status(200).json(listeDeFilms);
+            }else{
+            response.header('Content-Type','text/plain');
             response.status(404).send("Le film est inconnu");
+        }
 });
 				 
 function generateID(){
