@@ -7,14 +7,14 @@ var application = express();
 var bodyparser = require("body-parser");
 
 // process.env.PORT lets the port be set by Heroku
-//var port = process.env.PORT || 8080;
+var port = process.env.PORT || 8080;
 
-application.listen(13107,"192.168.1.59");
-//application.listen(port,"https://listemovies.herokuapp.com");
+//application.listen(13107,"192.168.1.59");
+application.listen(port,"https://listemovies.herokuapp.com");
 
-//application.listen(port, function() {
-//    console.log('Our app is running on http://localhost:' + port);
-//});
+application.listen(port, function() {
+   console.log('Our app is running on http://localhost:' + port);
+});
 
 application.get('/',
 	function(request,response){
